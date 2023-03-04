@@ -53,7 +53,6 @@ namespace FlowArrows
                     flowArrow.Activate();
                     document.Regenerate();
                 }
-
                 //Code to create flow arrow on the Curve of the pipe
 
                 document.Create.NewFamilyInstance(point, flowArrow, document.GetElement(levelId) as Level, StructuralType.NonStructural);
