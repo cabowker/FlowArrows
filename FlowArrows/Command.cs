@@ -37,13 +37,11 @@ namespace FlowArrows
             
             Reference reference = uiDocument.Selection.PickObject(ObjectType.PointOnElement);
             Pipe pipe = document.GetElement(reference) as Pipe;
+            Curve pipeCurve = ((LocationCurve)pipe.Location).Curve;
+
             ElementId levelId = pipe.LevelId;
             XYZ point = reference.GlobalPoint;
             Level level = document.ActiveView.GenLevel;
-
-
-            XYZ elementLocation = point;
-
 
             if (level == null)
                 {
@@ -59,14 +57,24 @@ namespace FlowArrows
                     document.Regenerate();
                 }
                 //Code to create flow arrow on the Curve of the pipe
-
-                var PlacedArrow = document.Create.NewFamilyInstance(point, flowArrow, document.GetElement(levelId) as Level, StructuralType.NonStructural);
+                var placedArrow = document.Create.NewFamilyInstance(point, flowArrow, document.GetElement(levelId) as Level, StructuralType.NonStructural);
                 
+                //Code to correct the insertion elevation of the object
                 document.Regenerate();
-                LocationPoint arrowLocationPoint = PlacedArrow.Location as LocationPoint;
+                LocationPoint arrowLocationPoint = placedArrow.Location as LocationPoint;
                 XYZ location = arrowLocationPoint.Point;
                 XYZ differencePoint = new XYZ(point.X - location.X, point.Y - location.Y, point.Z - location.Z);
-                PlacedArrow.Location.Move(new XYZ(differencePoint.X, differencePoint.Y, differencePoint.Z));
+                placedArrow.Location.Move(new XYZ(differencePoint.X, differencePoint.Y, differencePoint.Z));
+
+                //Rotate to match Pipe curve
+                XYZ pipeStartPoint = pipeCurve.GetEndPoint(0);
+                XYZ pipeEndPoint = pipeCurve.GetEndPoint(1);
+                Line rotationAxis = Line.CreateBound(pipeStartPoint, pipeEndPoint);
+                double rotationAngle = pipeCurve.ComputeDerivatives(0, false).BasisZ.AngleOnPlaneTo(pipeEndPoint, differencePoint);
+                //Transform rotationTransform = Transform.CreateRotationAtPoint(XYZ.BasisZ, rotationAngle, differencePoint);
+                placedArrow.Location.Rotate(rotationAxis, rotationAngle);
+
+
 
 
                 transaction.Commit();
