@@ -34,13 +34,18 @@ namespace FlowArrows
                 .FirstOrDefault(fam => fam.Family.Name.Contains("Flow Arrow"));
 
 
+            
+            Reference reference = uiDocument.Selection.PickObject(ObjectType.PointOnElement);
+            Pipe pipe = document.GetElement(reference) as Pipe;
+            ElementId levelId = pipe.LevelId;
+            XYZ point = reference.GlobalPoint;
+            Level level = document.ActiveView.GenLevel;
 
-                Reference reference = uiDocument.Selection.PickObject(ObjectType.PointOnElement);
-                Pipe pipe = document.GetElement(reference) as Pipe;
-                ElementId levelId = pipe.LevelId;
-                XYZ point = reference.GlobalPoint;
-                Level level = document.ActiveView.GenLevel;
-                if (level == null)
+
+            XYZ elementLocation = point;
+
+
+            if (level == null)
                 {
                     return Result.Failed;
                 }
@@ -55,12 +60,13 @@ namespace FlowArrows
                 }
                 //Code to create flow arrow on the Curve of the pipe
 
-                document.Create.NewFamilyInstance(point, flowArrow, document.GetElement(levelId) as Level, StructuralType.NonStructural);
+                var PlacedArrow = document.Create.NewFamilyInstance(point, flowArrow, document.GetElement(levelId) as Level, StructuralType.NonStructural);
                 
                 document.Regenerate();
-                XYZ arrowOrigin = reference.GlobalPoint;
-                XYZ differencePoint = new XYZ(point.X - arrowOrigin.X, point.Y - arrowOrigin.Y, point.Z - arrowOrigin.Z);
-                flowArrow.Location.Move(new XYZ(differencePoint.X, differencePoint.Y, differencePoint.Z));
+                LocationPoint arrowLocationPoint = PlacedArrow.Location as LocationPoint;
+                XYZ location = arrowLocationPoint.Point;
+                XYZ differencePoint = new XYZ(point.X - location.X, point.Y - location.Y, point.Z - location.Z);
+                PlacedArrow.Location.Move(new XYZ(differencePoint.X, differencePoint.Y, differencePoint.Z));
 
 
                 transaction.Commit();
