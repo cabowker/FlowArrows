@@ -24,8 +24,6 @@ namespace FlowArrows
             UIDocument uiDocument = uiApplication.ActiveUIDocument;
             Document document = uiApplication.ActiveUIDocument.Document;
 
-            Transaction transaction = new Transaction(document);
-
             // Select the Flow Arrow to be used flowArrow
             FamilySymbol flowArrow = new FilteredElementCollector(document)
                 .OfClass(typeof(FamilySymbol))
@@ -33,7 +31,7 @@ namespace FlowArrows
                 .Cast<FamilySymbol>()
                 .FirstOrDefault(fam => fam.Family.Name.Contains("Flow Arrow"));
 
-
+            Transaction transaction = new Transaction(document);
             
             Reference reference = uiDocument.Selection.PickObject(ObjectType.PointOnElement);
             Pipe pipe = document.GetElement(reference) as Pipe;
@@ -69,12 +67,11 @@ namespace FlowArrows
                 //Rotate to match Pipe curve
                 XYZ pipeStartPoint = pipeCurve.GetEndPoint(0);
                 XYZ pipeEndPoint = pipeCurve.GetEndPoint(1);
+                XYZ pipeDirection = (pipeEndPoint - pipeStartPoint).Normalize();
                 Line rotationAxis = Line.CreateBound(pipeStartPoint, pipeEndPoint);
-                double rotationAngle = pipeCurve.ComputeDerivatives(0, false).BasisZ.AngleOnPlaneTo(pipeEndPoint, differencePoint);
-                //Transform rotationTransform = Transform.CreateRotationAtPoint(XYZ.BasisZ, rotationAngle, differencePoint);
-                placedArrow.Location.Rotate(rotationAxis, rotationAngle);
 
-
+                double rotationAngle = pipeCurve.ComputeDerivatives(0, true).BasisZ.AngleOnPlaneTo(pipeEndPoint, pipeDirection);
+                ElementTransformUtils.RotateElement(document, placedArrow.Id, rotationAxis, rotationAngle);
 
 
                 transaction.Commit();
