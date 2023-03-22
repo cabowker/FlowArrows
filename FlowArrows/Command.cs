@@ -31,21 +31,24 @@ namespace FlowArrows
                 .Cast<FamilySymbol>()
                 .FirstOrDefault(fam => fam.Family.Name.Contains("Flow Arrow"));
 
-            Transaction transaction = new Transaction(document);
-            
+
+
             Reference reference = uiDocument.Selection.PickObject(ObjectType.PointOnElement);
-            Pipe pipe = document.GetElement(reference) as Pipe;
+            Element pipe = document.GetElement(reference);
+            //Pipe pipe = document.GetElement(reference) as Pipe;
             //Curve pipeCurve = ((LocationCurve)pipe.Location).Curve;
             Line line = (pipe.Location as LocationCurve).Curve as Line;
             ElementId levelId = pipe.LevelId;
             XYZ pipeDirection = line.Direction;
             XYZ point = reference.GlobalPoint;
-            Level level = document.ActiveView.GenLevel;
 
-            if (level == null)
-                {
-                    return Result.Failed;
-                }
+            Transaction transaction = new Transaction(document);
+            //Level level = document.ActiveView.GenLevel;
+
+            //if (level == null)
+            //    {
+            //        return Result.Failed;
+            //    }
             try
             {
                 transaction.Start("Flow Arrow");
