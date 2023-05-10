@@ -47,8 +47,6 @@ namespace FlowArrows
 
                 transaction.Start("Flow Arrow");
 
-
-                if (!flowArrow.IsActive)
                 if (!flowArrow.IsActive)
                 {
                     flowArrow.Activate();

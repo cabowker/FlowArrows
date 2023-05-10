@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)"."" "$(AppData)\Autodesk\Revit\Addins\2023\"</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdWindows, Version=4.0.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Revit_All_Main_Versions_API_x64.2023.0.0\lib\net48\AdWindows.dll</HintPath>
@@ -70,6 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FlowArrows.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

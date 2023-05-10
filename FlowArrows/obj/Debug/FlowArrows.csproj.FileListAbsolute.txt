@@ -4,3 +4,4 @@ C:\Users\christopherbowker\source\repos\Chris Pipe Tools\FlowArrowsApp\FlowArrow
 C:\Users\christopherbowker\source\repos\Chris Pipe Tools\FlowArrowsApp\FlowArrows\obj\Debug\FlowArrows.csproj.CoreCompileInputs.cache
 C:\Users\christopherbowker\source\repos\Chris Pipe Tools\FlowArrowsApp\FlowArrows\obj\Debug\FlowArrows.dll
 C:\Users\christopherbowker\source\repos\Chris Pipe Tools\FlowArrowsApp\FlowArrows\obj\Debug\FlowArrows.pdb
+C:\Users\christopherbowker\source\repos\Chris Pipe Tools\FlowArrowsApp\FlowArrows\bin\Debug\FlowArrows.addin
